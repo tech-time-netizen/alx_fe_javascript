@@ -44,22 +44,41 @@ function removeDuplicates() {
   });
 }
 
-function updateCategories() {
-  const categorySelect = document.getElementById("categorySelect");
+// Populate both category dropdowns
+function populateCategories() {
   const categories = [...new Set(quotes.map((q) => q.category))];
-  categorySelect.innerHTML = '<option value="all">All Categories</option>';
-  categories.forEach((category) => {
+
+  // For random quote selector
+  const categorySelect = document.getElementById("categorySelect");
+  categorySelect.innerHTML = "";
+  categories.forEach((cat) => {
     const option = document.createElement("option");
-    option.value = category;
-    option.textContent = category;
+    option.value = cat;
+    option.textContent = cat;
     categorySelect.appendChild(option);
   });
+
+  // For filter dropdown
+  const categoryFilter = document.getElementById("categoryFilter");
+  categoryFilter.innerHTML = `<option value="all">All Categories</option>`;
+  categories.forEach((cat) => {
+    const option = document.createElement("option");
+    option.value = cat;
+    option.textContent = cat;
+    categoryFilter.appendChild(option);
+  });
+
+  // Restore last filter
+  const lastFilter = localStorage.getItem("lastCategoryFilter");
+  if (lastFilter && (lastFilter === "all" || categories.includes(lastFilter))) {
+    categoryFilter.value = lastFilter;
+  }
 }
 
+// Show random quote from selected category
 function showRandomQuote() {
   const selected = document.getElementById("categorySelect").value;
-  const filtered =
-    selected === "all" ? quotes : quotes.filter((q) => q.category === selected);
+  const filtered = quotes.filter((q) => q.category === selected);
 
   if (filtered.length === 0) {
     document.getElementById("quoteDisplay").textContent =
@@ -71,6 +90,30 @@ function showRandomQuote() {
   document.getElementById("quoteDisplay").textContent = `"${quote.text}"`;
 }
 
+// Show quotes matching selected filter
+function filterQuotes() {
+  const selected = document.getElementById("categoryFilter").value;
+  const filteredQuotesDiv = document.getElementById("filteredQuotes");
+
+  localStorage.setItem("lastCategoryFilter", selected);
+
+  let filtered =
+    selected === "all" ? quotes : quotes.filter((q) => q.category === selected);
+
+  filteredQuotesDiv.innerHTML = "";
+  if (filtered.length === 0) {
+    filteredQuotesDiv.textContent = "No quotes in this category.";
+    return;
+  }
+
+  filtered.forEach((q) => {
+    const p = document.createElement("p");
+    p.textContent = `"${q.text}" (${q.category})`;
+    filteredQuotesDiv.appendChild(p);
+  });
+}
+
+// Add new quote
 function createAddQuoteForm(e) {
   e.preventDefault();
   const text = document.getElementById("quoteText").value.trim();
@@ -82,11 +125,13 @@ function createAddQuoteForm(e) {
     saveQuotes();
     document.getElementById("quoteText").value = "";
     document.getElementById("quoteCategory").value = "";
-    updateCategories();
+    populateCategories();
+    filterQuotes();
     alert("Quote Added");
   }
 }
 
+// Export
 function exportToJsonFile() {
   const dataStr = JSON.stringify(quotes, null, 2);
   const blob = new Blob([dataStr], { type: "application/json" });
@@ -98,16 +143,18 @@ function exportToJsonFile() {
   URL.revokeObjectURL(url);
 }
 
+// Import
 function importFromJsonFile(event) {
   const fileReader = new FileReader();
   fileReader.onload = function (e) {
     try {
-      const importedQuotes = JSON.parse(e.target.result);
-      if (Array.isArray(importedQuotes)) {
-        quotes.push(...importedQuotes);
+      const imported = JSON.parse(e.target.result);
+      if (Array.isArray(imported)) {
+        quotes.push(...imported);
         removeDuplicates();
         saveQuotes();
-        updateCategories();
+        populateCategories();
+        filterQuotes();
         alert("Quotes imported successfully!");
       } else {
         alert("Invalid JSON format.");
@@ -130,7 +177,11 @@ document
 document
   .getElementById("importFile")
   .addEventListener("change", importFromJsonFile);
+document
+  .getElementById("categoryFilter")
+  .addEventListener("change", filterQuotes);
 
-// Init
+// Init everything
 loadQuotes();
-updateCategories();
+populateCategories();
+filterQuotes();

@@ -8,20 +8,24 @@
 <body>
   <h1>Dynamic Quote Generator</h1>
 
-  <!-- Unified Category Selector -->
-  <label for="categorySelect">Choose category:</label>
-  <select id="categorySelect">
-    <option value="all">All Categories</option>
-  </select>
-
-  <!-- Display Area -->
+  <!-- Random Quote -->
+  <label for="categorySelect">Choose category for random quote:</label>
+  <select id="categorySelect"></select>
   <div id="quoteDisplay" style="margin: 20px 0; font-style: italic;"></div>
   <button id="newQuote">Show Random Quote</button>
-  <div id="filteredQuotes" style="margin-top: 15px;"></div>
 
   <hr>
 
-  <!-- Add Quote Section -->
+  <!-- Category Filter -->
+  <h2>Filter Quotes by Category</h2>
+  <select id="categoryFilter">
+    <option value="all">All Categories</option>
+  </select>
+  <div id="filteredQuotes" style="margin: 20px 0;"></div>
+
+  <hr>
+
+  <!-- Add a New Quote -->
   <h2>Add a New Quote</h2>
   <form id="quoteForm">
     <input type="text" id="quoteText" placeholder="Write your quote here" required />
@@ -31,7 +35,7 @@
 
   <hr>
 
-  <!-- Import/Export Section -->
+  <!-- Import/Export -->
   <h2>Import / Export Quotes</h2>
   <button id="exportBtn">Export Quotes as JSON</button>
   <br><br>
