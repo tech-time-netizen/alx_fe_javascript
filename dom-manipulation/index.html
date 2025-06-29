@@ -1,35 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Quote Generator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dynamic Quote Generator</title>
 </head>
 <body>
-    <h1>Dynamic Quote Generator</h1>
-    
-    <label for="categorySelect">Choose category:</label>
-    <select id="categorySelect"></select>
+  <h1>Dynamic Quote Generator</h1>
 
-    <div id="quoteDisplay" style="margin: 20px 0; font-style: italic;"></div>
-    <button id="newQuote">Show New Quote</button>
+  <!-- Unified Category Selector -->
+  <label for="categorySelect">Choose category:</label>
+  <select id="categorySelect">
+    <option value="all">All Categories</option>
+  </select>
 
-    <hr>
+  <!-- Display Area -->
+  <div id="quoteDisplay" style="margin: 20px 0; font-style: italic;"></div>
+  <button id="newQuote">Show Random Quote</button>
+  <div id="filteredQuotes" style="margin-top: 15px;"></div>
 
-    <h2>Add a New Quote</h2>
-    <form id="quoteForm">
-        <input type="text" id="quoteText" placeholder="Write your quote here" required>
-        <input type="text" id="quoteCategory" placeholder="Category" required>
-        <button type="submit">Add Quote</button>
-    </form>
+  <hr>
 
-    <hr>
+  <!-- Add Quote Section -->
+  <h2>Add a New Quote</h2>
+  <form id="quoteForm">
+    <input type="text" id="quoteText" placeholder="Write your quote here" required />
+    <input type="text" id="quoteCategory" placeholder="Category" required />
+    <button type="submit">Add Quote</button>
+  </form>
 
-    <h2>Import / Export Quotes</h2>
-    <button id="exportBtn">Export Quotes as JSON</button>
-    <br><br>
-    <input type="file" id="importFile" accept=".json">
+  <hr>
 
-    <script src="script.js"></script>
+  <!-- Import/Export Section -->
+  <h2>Import / Export Quotes</h2>
+  <button id="exportBtn">Export Quotes as JSON</button>
+  <br><br>
+  <input type="file" id="importFile" accept=".json" />
+
+  <script src="script.js"></script>
 </body>
 </html>
