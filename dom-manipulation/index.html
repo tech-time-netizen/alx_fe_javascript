@@ -9,10 +9,9 @@
     <h1>Dynamic Quote Generator</h1>
     
     <label for="categorySelect">Choose category:</label>
+    <select id="categorySelect"></select>
 
-    <select name="" id="categorySelect"></select>
-
-    <div id="quoteDisplay" style="margin: 20px 0; font-style:italic"></div>
+    <div id="quoteDisplay" style="margin: 20px 0; font-style: italic;"></div>
     <button id="newQuote">Show New Quote</button>
 
     <hr>
@@ -20,9 +19,17 @@
     <h2>Add a New Quote</h2>
     <form id="quoteForm">
         <input type="text" id="quoteText" placeholder="Write your quote here" required>
-        <input type="text" id="quoteCategory" placeholder="Category " required>
+        <input type="text" id="quoteCategory" placeholder="Category" required>
         <button type="submit">Add Quote</button>
     </form>
+
+    <hr>
+
+    <h2>Import / Export Quotes</h2>
+    <button id="exportBtn">Export Quotes as JSON</button>
+    <br><br>
+    <input type="file" id="importFile" accept=".json">
+
     <script src="script.js"></script>
 </body>
 </html>
