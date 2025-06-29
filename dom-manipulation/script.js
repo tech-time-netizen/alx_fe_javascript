@@ -1,6 +1,7 @@
 let quotes = [];
-let selectedCategory = "all"; // Required by task
+let selectedCategory = "all";
 
+// Load from localStorage or default
 function loadQuotes() {
   const stored = localStorage.getItem("quotes");
   if (stored) {
@@ -31,10 +32,12 @@ function loadQuotes() {
   }
 }
 
+// Save to localStorage
 function saveQuotes() {
   localStorage.setItem("quotes", JSON.stringify(quotes));
 }
 
+// Remove duplicates based on text + category
 function removeDuplicates() {
   const seen = new Set();
   quotes = quotes.filter((q) => {
@@ -45,10 +48,10 @@ function removeDuplicates() {
   });
 }
 
+// Populate category dropdowns
 function populateCategories() {
   const categories = [...new Set(quotes.map((q) => q.category))];
 
-  // For random quote dropdown
   const categorySelect = document.getElementById("categorySelect");
   categorySelect.innerHTML = "";
   categories.forEach((cat) => {
@@ -58,7 +61,6 @@ function populateCategories() {
     categorySelect.appendChild(option);
   });
 
-  // For filter dropdown
   const categoryFilter = document.getElementById("categoryFilter");
   categoryFilter.innerHTML = '<option value="all">All Categories</option>';
   categories.forEach((cat) => {
@@ -68,7 +70,6 @@ function populateCategories() {
     categoryFilter.appendChild(option);
   });
 
-  // Restore last selected filter
   const last = localStorage.getItem("lastCategoryFilter");
   if (last && (last === "all" || categories.includes(last))) {
     categoryFilter.value = last;
@@ -76,6 +77,7 @@ function populateCategories() {
   }
 }
 
+// Show a random quote based on selected category
 function showRandomQuote() {
   const selected = document.getElementById("categorySelect").value;
   const filtered = quotes.filter((q) => q.category === selected);
@@ -91,6 +93,7 @@ function showRandomQuote() {
   sessionStorage.setItem("lastQuote", quote.text);
 }
 
+// Filter quotes in list view
 function filterQuotes() {
   selectedCategory = document.getElementById("categoryFilter").value;
   localStorage.setItem("lastCategoryFilter", selectedCategory);
@@ -115,15 +118,18 @@ function filterQuotes() {
   });
 }
 
+// Add a new quote
 function createAddQuoteForm(e) {
   e.preventDefault();
   const text = document.getElementById("quoteText").value.trim();
   const category = document.getElementById("quoteCategory").value.trim();
 
   if (text && category) {
-    quotes.push({ text, category });
+    const newQuote = { text, category };
+    quotes.push(newQuote);
     removeDuplicates();
     saveQuotes();
+    sendQuoteToServer(newQuote); //POST to mock server
     document.getElementById("quoteText").value = "";
     document.getElementById("quoteCategory").value = "";
     populateCategories();
@@ -132,6 +138,7 @@ function createAddQuoteForm(e) {
   }
 }
 
+// Export quotes as JSON
 function exportToJsonFile() {
   const dataStr = JSON.stringify(quotes, null, 2);
   const blob = new Blob([dataStr], { type: "application/json" });
@@ -143,6 +150,7 @@ function exportToJsonFile() {
   URL.revokeObjectURL(url);
 }
 
+// Import quotes from JSON file
 function importFromJsonFile(event) {
   const fileReader = new FileReader();
   fileReader.onload = function (e) {
@@ -204,8 +212,23 @@ function resolveConflicts(serverQuotes) {
   }
 }
 
-// Periodic sync every 15 seconds
-setInterval(fetchQuotesFromServer, 15000);
+//POST new quote to mock API
+function sendQuoteToServer(quote) {
+  fetch("https://jsonplaceholder.typicode.com/posts", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(quote),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Quote sent to server (simulated):", data);
+    })
+    .catch((err) => {
+      console.error("Failed to send quote to server:", err);
+    });
+}
 
 // --- Event Listeners ---
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
@@ -226,3 +249,4 @@ document
 loadQuotes();
 populateCategories();
 filterQuotes();
+setInterval(fetchQuotesFromServer, 15000); // fetch every 15s
