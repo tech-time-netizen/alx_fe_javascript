@@ -56,7 +56,7 @@ function showRandomQuote() {
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
 
 // Adding a new quote
-function addQuote(e) {
+function createAddQuoteForm(e) {
     e.preventDefault();
     const text = document.getElementById("quoteText").value.trim();
     const category = document.getElementById("quoteCategory").value.trim();
@@ -71,5 +71,5 @@ function addQuote(e) {
 }
 
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
-document.getElementById("quoteForm").addEventListener("submit", addQuote);
+document.getElementById("quoteForm").addEventListener("submit", createAddQuoteForm);
 updateCategories()
